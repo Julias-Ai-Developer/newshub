@@ -85,8 +85,13 @@ include APP_ROOT . '/templates/header.php';
                         <?php if ($article['excerpt']): ?>
                         <p class="card-text"><?php echo truncate($article['excerpt'], 120); ?></p>
                         <?php endif; ?>
+
+                        <a href="<?php echo SITE_URL; ?>/article.php?slug=<?php echo htmlspecialchars($article['slug']); ?>" 
+                           class="btn btn-primary btn-sm mt-2">
+                            Read More
+                        </a>
                         
-                        <div class="card-meta">
+                        <div class="card-meta mt-3">
                             <?php if ($article['author_name']): ?>
                             <span><i class="fas fa-user"></i> <?php echo htmlspecialchars($article['author_name']); ?></span>
                             <?php endif; ?>

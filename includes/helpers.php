@@ -230,6 +230,12 @@ function create_thumbnail($source, $dest_dir) {
         $new_width = $thumb_height * $ratio;
     }
     
+    // Cast all geometry values to integers to avoid implicit float-to-int conversions
+    $new_width = (int) round($new_width);
+    $new_height = (int) round($new_height);
+    $dst_x = (int) round(($thumb_width - $new_width) / 2);
+    $dst_y = (int) round(($thumb_height - $new_height) / 2);
+    
     // Create thumbnail
     $thumbnail = imagecreatetruecolor($thumb_width, $thumb_height);
     
@@ -241,7 +247,7 @@ function create_thumbnail($source, $dest_dir) {
     
     imagecopyresampled(
         $thumbnail, $image,
-        ($thumb_width - $new_width) / 2, ($thumb_height - $new_height) / 2,
+        $dst_x, $dst_y,
         0, 0,
         $new_width, $new_height,
         $width, $height

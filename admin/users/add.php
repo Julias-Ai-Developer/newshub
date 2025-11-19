@@ -1,6 +1,5 @@
-<!-- ============================================ -->
-<!-- admin/users/add.php - ADD USER -->
 <?php
+// admin/users/add.php - ADD USER
 define('APP_ROOT', dirname(dirname(__DIR__)));
 require_once APP_ROOT . '/includes/config.php';
 require_once APP_ROOT . '/includes/db.php';

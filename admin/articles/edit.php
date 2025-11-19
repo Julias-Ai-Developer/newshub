@@ -46,7 +46,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $meta_title = sanitize($_POST['meta_title'] ?? '');
     $meta_description = sanitize($_POST['meta_description'] ?? '');
     $meta_keywords = sanitize($_POST['meta_keywords'] ?? '');
-    $scheduled_at = sanitize($_POST['scheduled_at'] ?? '');
+
+    // Normalize scheduled_at: allow NULL or proper MySQL DATETIME, never empty string
+    $raw_scheduled_at = $_POST['scheduled_at'] ?? '';
+    $scheduled_at = null;
+    if (!empty($raw_scheduled_at)) {
+        $scheduled_dt = str_replace('T', ' ', $raw_scheduled_at);
+        if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $scheduled_dt)) {
+            $scheduled_dt .= ':00';
+        }
+        $scheduled_at = $scheduled_dt;
+    }
+
     $selected_tags = $_POST['tags'] ?? [];
     
     if (empty($title)) {

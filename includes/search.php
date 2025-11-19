@@ -107,20 +107,32 @@ include APP_ROOT . '/templates/header.php';
             <h3>No results found</h3>
             <p class="text-muted">Try different keywords or browse our categories.</p>
             
-            <div class="mt-4">
-                <h5>Popular Categories</h5>
-                <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
-                    <?php
-                    $categories = db_fetch_all("SELECT * FROM categories WHERE status = 'active' LIMIT 6");
-                    foreach ($categories as $cat):
-                    ?>
-                    <a href="<?php echo SITE_URL; ?>/category.php?slug=<?php echo $cat['slug']; ?>" 
-                       class="btn btn-outline-primary">
-                        <?php echo htmlspecialchars($cat['name']); ?>
-                    </a>
-                    <?php endforeach; ?>
-                </div>
-            </div>
+                    <div class="mt-4">
+                        <h5>Popular Categories</h5>
+                        <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
+                            <?php
+                            // Prioritize Politics in popular categories if it exists
+                            $categories = [];
+                            $politics_cat = db_fetch("SELECT * FROM categories WHERE slug = 'politics' AND status = 'active'");
+                            if ($politics_cat) {
+                                $categories[] = $politics_cat;
+                            }
+                            $remaining = 6 - count($categories);
+                            if ($remaining > 0) {
+                                $other_cats = db_fetch_all(
+                                    "SELECT * FROM categories WHERE status = 'active' AND slug != 'politics' LIMIT {$remaining}"
+                                );
+                                $categories = array_merge($categories, $other_cats);
+                            }
+                            foreach ($categories as $cat):
+                            ?>
+                            <a href="<?php echo SITE_URL; ?>/category.php?slug=<?php echo $cat['slug']; ?>" 
+                               class="btn btn-outline-primary">
+                                <?php echo htmlspecialchars($cat['name']); ?>
+                            </a>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
         </div>
         
         <?php else: ?>
